@@ -103,10 +103,7 @@ describe("Login Page", () => {
 
     userEvent.type(passwordInput, "learnbydoing");
 
-    userEvent.click(screen.getByText(/login to qkart/i));    
-    // await act(async () => {
-    //   userEvent.click(screen.getByText(/login to qkart/i));
-    // });
+    userEvent.click(screen.getByText(/login to qkart/i)); 
 
     const alert = await screen.findByRole("alert");
     expect(alert).toBeInTheDocument();
@@ -149,13 +146,9 @@ describe("Login Page", () => {
       userEvent.click(screen.getByText(/login to qkart/i));
     });
 
-    // console.log(mock.history.post)
     const loginPostCall = mock.history.post.find(
       (req) => req.url === `${config.endpoint}/auth/login`
     );
-    // const loginPostCall = mock.history.post.find(
-    //   (req) => req.url.includes('/auth/login')
-    // );
     expect(loginPostCall).toBeTruthy();
   });
 
