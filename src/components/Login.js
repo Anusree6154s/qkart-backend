@@ -3,60 +3,58 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
+import { useHistory, Link } from "react-router-dom";
 import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
-import "./Register.css";
+import "./Login.css";
 
-// TODO: CRIO_TASK_MODULE_REGISTER - Implement the register function
-import { useHistory, Link } from "react-router-dom";
-
-const Register = () => {
+const Login = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
+  // TODO: CRIO_TASK_MODULE_LOGIN - Fetch the API response
   /**
-   * Definition for register handler
-   * - Function to be called when the user clicks on the register button or submits the register form
-   *
-   * @param {{ username: string, password: string, confirmPassword: string }} formData
+   * Perform the Login API call
+   * @param {{ username: string, password: string }} formData
    *  Object with values of username, password and confirm password user entered to register
    *
-   * API endpoint - "POST /auth/register"
+   * API endpoint - "POST /auth/login"
    *
-   * Example for successful response from backend for the API call:
+   * Example for successful response from backend:
    * HTTP 201
    * {
    *      "success": true,
+   *      "token": "testtoken",
+   *      "username": "criodo",
+   *      "balance": 5000
    * }
    *
-   * Example for failed response from backend for the API call:
+   * Example for failed response from backend:
    * HTTP 400
    * {
    *      "success": false,
-   *      "message": "Username is already taken"
+   *      "message": "Password is incorrect"
    * }
+   *
    */
-  const register = async () => {
-    const { username, password } = formData;
+  const login = async () => {
     try {
-      await axios.post(`${config.endpoint}/auth/register`, {
-        username,
-        password,
-      });
-      enqueueSnackbar("Registered successfully", { variant: "success" });
+      let res = await axios.post(`${config.endpoint}/auth/login`, formData);
+      enqueueSnackbar("Logged in successfully", { variant: "success" });
+      let { token, username, balance } = res.data;
+      persistLogin(token, username, balance);
       setTimeout(() => {
-        history.push("/login", { from: "Register" });
-      });
+        history.push("/", { from: "Login" });
+      }, 1000);
     } catch (error) {
       if (error.response) {
-        enqueueSnackbar("Username is already taken", { variant: "error" });
+        enqueueSnackbar(error.response.data.message, { variant: "error" });
       } else {
         enqueueSnackbar(
           "Something went wrong. Check that the backend is running, reachable and returns valid JSON.",
@@ -66,48 +64,32 @@ const Register = () => {
     }
   };
 
-  // TODO: CRIO_TASK_MODULE_REGISTER - Implement user input validation logic
+  // TODO: CRIO_TASK_MODULE_LOGIN - Validate the input
   /**
    * Validate the input values so that any bad or illegal values are not passed to the backend.
    *
-   * @param {{ username: string, password: string, confirmPassword: string }} data
+   * @param {{ username: string, password: string }} data
    *  Object with values of username, password and confirm password user entered to register
    *
    * @returns {boolean}
    *    Whether validation has passed or not
    *
-   * Return false if any validation condition fails, otherwise return true.
+   * Return false and show warning message if any validation condition fails, otherwise return true.
    * (NOTE: The error messages to be shown for each of these cases, are given with them)
    * -    Check that username field is not an empty value - "Username is a required field"
-   * -    Check that username field is not less than 6 characters in length - "Username must be at least 6 characters"
    * -    Check that password field is not an empty value - "Password is a required field"
-   * -    Check that password field is not less than 6 characters in length - "Password must be at least 6 characters"
-   * -    Check that confirmPassword field has the same value as password field - Passwords do not match
    */
   const validateInput = () => {
-    const { username, password, confirmPassword } = formData;
+    const { username, password } = formData;
 
-    console.log(isLoading);
     let arr = [
       {
         check: username === "",
         popup: "Username is a required field",
       },
       {
-        check: username.length < 6,
-        popup: "Username must be at least 6 characters",
-      },
-      {
         check: password === "",
         popup: "Password is a required field",
-      },
-      {
-        check: password.length < 6,
-        popup: "Password must be at least 6 characters",
-      },
-      {
-        check: confirmPassword !== password,
-        popup: "Passwords do not match",
       },
     ];
 
@@ -122,6 +104,28 @@ const Register = () => {
     return true;
   };
 
+  // TODO: CRIO_TASK_MODULE_LOGIN - Persist user's login information
+  /**
+   * Store the login information so that it can be used to identify the user in subsequent API calls
+   *
+   * @param {string} token
+   *    API token used for authentication of requests after logging in
+   * @param {string} username
+   *    Username of the logged in user
+   * @param {string} balance
+   *    Wallet balance amount of the logged in user
+   *
+   * Make use of localStorage: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+   * -    `token` field in localStorage can be used to store the Oauth token
+   * -    `username` field in localStorage can be used to store the username that the user is logged in as
+   * -    `balance` field in localStorage can be used to store the balance amount in the user's wallet
+   */
+  const persistLogin = (token, username, balance) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("username", username);
+    localStorage.setItem("balance", balance);
+  };
+
   return (
     <Box
       display="flex"
@@ -132,7 +136,7 @@ const Register = () => {
       <Header hasHiddenAuthButtons={false} />
       <Box className="content">
         <Stack spacing={2} className="form">
-          <h2 className="title">Register</h2>
+          <h2 className="title">Login</h2>
           <TextField
             className="TextField"
             id="username"
@@ -156,23 +160,6 @@ const Register = () => {
             label="Password"
             name="password"
             type="password"
-            helperText="Password must be atleast 6 characters length"
-            fullWidth
-            placeholder="Enter a password with minimum 6 characters"
-            onChange={(e) =>
-              setFormData((prevData) => ({
-                ...prevData,
-                [e.target.id]: e.target.value,
-              }))
-            }
-          />
-          <TextField
-            className="TextField"
-            id="confirmPassword"
-            variant="outlined"
-            label="Confirm Password"
-            name="confirmPassword"
-            type="password"
             fullWidth
             onChange={(e) =>
               setFormData((prevData) => ({
@@ -187,10 +174,10 @@ const Register = () => {
               variant="contained"
               onClick={async () => {
                 await setIsLoading(true);
-                validateInput() && register();
+                if (validateInput()) login();
               }}
             >
-              Register Now
+              Login to QKart
             </Button>
           )}
           {isLoading && (
@@ -199,7 +186,7 @@ const Register = () => {
             </Box>
           )}
           <p className="secondary-action">
-            Already have an account? <Link to="/login">Login here</Link>
+            Don't have an account? <Link to="/register">Register Now</Link>
           </p>
         </Stack>
       </Box>
@@ -208,4 +195,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

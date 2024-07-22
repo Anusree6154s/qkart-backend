@@ -4,19 +4,27 @@ import "./index.css";
 import App from "./App";
 import { SnackbarProvider } from "notistack";
 
-// TODO: CRIO_TASK_MODULE_REGISTER - Add Target container ID (refer public/index.html)
+import { BrowserRouter } from "react-router-dom";
+import { ThemeProvider } from "@mui/system";
+import theme from "./theme";
+
 ReactDOM.render(
   <React.StrictMode>
-        <SnackbarProvider
-          maxSnack={1}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          preventDuplicate
-        >
+    <ThemeProvider theme={theme}>
+      <SnackbarProvider
+        maxSnack={1}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        preventDuplicate
+      >
+        <BrowserRouter>
           <App />
-        </SnackbarProvider>
+        </BrowserRouter>
+      </SnackbarProvider>
+    </ThemeProvider>
   </React.StrictMode>,
-   document.getElementById('root')
+  // TODO: CRIO_TASK_MODULE_REGISTER - Add Target container ID (refer public/index.html)
+  document.getElementById("root")
 );
