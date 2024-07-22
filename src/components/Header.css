@@ -3,9 +3,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    height: 5vh;
+    height: 3vh;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
     background: #ffffff;
+}
+
+.header img{
+    width: 70%;
 }
 
 .username-text {
@@ -25,3 +29,4 @@
         display: block;
     }
 }
+

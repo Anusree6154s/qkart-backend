@@ -10,7 +10,12 @@ import "./Register.css";
 
 const Register = () => {
   const { enqueueSnackbar } = useSnackbar();
-
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
   // TODO: CRIO_TASK_MODULE_REGISTER - Implement the register function
   /**
@@ -35,7 +40,24 @@ const Register = () => {
    *      "message": "Username is already taken"
    * }
    */
-  const register = async (formData) => {
+  const register = async () => {
+    const { username, password } = formData;
+    try {
+      await axios.post(config.endpoint + "/auth/register", {
+        username,
+        password,
+      });
+      enqueueSnackbar("Registered successfully", { variant: "success" });
+    } catch (error) {
+      if (error.response) {
+        enqueueSnackbar("Username is already taken", { variant: "error" });
+      } else {
+        enqueueSnackbar(
+          "Something went wrong. Check that the backend is running, reachable and returns valid JSON.",
+          { variant: "error" }
+        );
+      }
+    }
   };
 
   // TODO: CRIO_TASK_MODULE_REGISTER - Implement user input validation logic
@@ -56,9 +78,45 @@ const Register = () => {
    * -    Check that password field is not less than 6 characters in length - "Password must be at least 6 characters"
    * -    Check that confirmPassword field has the same value as password field - Passwords do not match
    */
-  const validateInput = (data) => {
+  const validateInput = () => {
+    const { username, password, confirmPassword } = formData;
+
+    console.log(isLoading);
+    let arr = [
+      {
+        check: username === "",
+        popup: "Username is a required field",
+      },
+      {
+        check: username.length < 6,
+        popup: "Username must be at least 6 characters",
+      },
+      {
+        check: password === "",
+        popup: "Password is a required field",
+      },
+      {
+        check: password.length < 6,
+        popup: "Password must be at least 6 characters",
+      },
+      {
+        check: confirmPassword !== password,
+        popup: "Passwords do not match",
+      },
+    ];
+
+    for (let { check, popup } of arr) {
+      if (check) {
+        enqueueSnackbar(popup, { variant: "warning" });
+        setIsLoading(false);
+        return false;
+      }
+    }
+    setIsLoading(false);
+    return true;
   };
 
+  console.log(isLoading);
   return (
     <Box
       display="flex"
@@ -71,6 +129,7 @@ const Register = () => {
         <Stack spacing={2} className="form">
           <h2 className="title">Register</h2>
           <TextField
+            className="TextField"
             id="username"
             label="Username"
             variant="outlined"
@@ -78,8 +137,15 @@ const Register = () => {
             name="username"
             placeholder="Enter Username"
             fullWidth
+            onChange={(e) =>
+              setFormData((prevData) => ({
+                ...prevData,
+                [e.target.id]: e.target.value,
+              }))
+            }
           />
           <TextField
+            className="TextField"
             id="password"
             variant="outlined"
             label="Password"
@@ -88,23 +154,52 @@ const Register = () => {
             helperText="Password must be atleast 6 characters length"
             fullWidth
             placeholder="Enter a password with minimum 6 characters"
+            onChange={(e) =>
+              setFormData((prevData) => ({
+                ...prevData,
+                [e.target.id]: e.target.value,
+              }))
+            }
           />
           <TextField
+            className="TextField"
             id="confirmPassword"
             variant="outlined"
             label="Confirm Password"
             name="confirmPassword"
             type="password"
             fullWidth
+            onChange={(e) =>
+              setFormData((prevData) => ({
+                ...prevData,
+                [e.target.id]: e.target.value,
+              }))
+            }
           />
-           <Button className="button" variant="contained">
-            Register Now
-           </Button>
+          {!isLoading && (
+            <Button
+              className="button"
+              variant="contained"
+              onClick={async () => {
+                await setIsLoading(true);
+                setTimeout(() => {
+                  validateInput() && register();
+                }, 1000);
+              }}
+            >
+              Register Now
+            </Button>
+          )}
+          {isLoading && (
+            <Box className="progress">
+              <CircularProgress />
+            </Box>
+          )}
           <p className="secondary-action">
             Already have an account?{" "}
-             <a className="link" href="#">
+            <a className="link" href="#">
               Login here
-             </a>
+            </a>
           </p>
         </Stack>
       </Box>
