@@ -103,7 +103,7 @@ describe("Login Page", () => {
 
     userEvent.type(passwordInput, "learnbydoing");
 
-    userEvent.click(screen.getByText(/login to qkart/i)); 
+    userEvent.click(screen.getByText(/login to qkart/i));    
 
     const alert = await screen.findByRole("alert");
     expect(alert).toBeInTheDocument();

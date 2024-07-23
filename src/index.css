@@ -8,10 +8,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 60%;
-  background-image: url("./assets/hero_image.png");
+  /* background-image: url("./assets/hero_image.png");
   background-position: center;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: contain; */
 }
 
 code {

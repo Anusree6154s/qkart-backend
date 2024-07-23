@@ -1,9 +1,16 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Avatar, Button, Stack } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Stack,
+  // TextField,
+  // InputAdornment,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import React, { useState, useEffect } from "react";
 import "./Header.css";
 import { useHistory, Link } from "react-router-dom";
+// import { Search } from "@mui/icons-material";
 
 const Header = ({ children, hasHiddenAuthButtons = true }) => {
   const [user, setUser] = useState("");
@@ -13,15 +20,31 @@ const Header = ({ children, hasHiddenAuthButtons = true }) => {
     setUser(username);
   }, []);
 
-  console.log(user);
   return (
     <Box className="header">
       <Box className="header-title">
         <img src="logo_light.svg" alt="QKart-icon"></img>
       </Box>
-      <Stack direction="row" spacing={2}>
-        {hasHiddenAuthButtons && (
-          <>
+      {hasHiddenAuthButtons && (
+        <>
+          {/* <TextField
+            className="search-desktop"
+            size="small"
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Search color="primary" />
+                </InputAdornment>
+              ),
+            }}
+            placeholder="Search for items/categories"
+            name="search"
+            sx={{ backgroundColor: "white", width: "30%" }}
+            onChange={(e) => console.log(e.target.value)}
+          /> */}
+          {children}
+          <Stack direction="row" spacing={2}>
             {!user && (
               <>
                 <Link to="/login">
@@ -62,20 +85,20 @@ const Header = ({ children, hasHiddenAuthButtons = true }) => {
                 </Link>
               </>
             )}
-          </>
-        )}
-        {!hasHiddenAuthButtons && (
-          <Link to="/">
-            <Button
-              className="explore-button"
-              startIcon={<ArrowBackIcon />}
-              variant="text"
-            >
-              Back to explore
-            </Button>
-          </Link>
-        )}
-      </Stack>
+          </Stack>
+        </>
+      )}
+      {!hasHiddenAuthButtons && (
+        <Link to="/">
+          <Button
+            className="explore-button"
+            startIcon={<ArrowBackIcon />}
+            variant="text"
+          >
+            Back to explore
+          </Button>
+        </Link>
+      )}
     </Box>
   );
 };
