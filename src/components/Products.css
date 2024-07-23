@@ -70,3 +70,15 @@
     display: block !important;
   }
 }
+
+.Products {
+  display: flex;
+  flex-direction: column;
+}
+
+/* .content { */
+  /* display: flex;
+  flex-direction: column; */
+  /* justify-content: center; */
+  /* height: 70vh; */
+/* } */

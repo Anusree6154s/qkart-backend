@@ -13,10 +13,15 @@ import React from "react";
 import "./ProductCard.css";
 
 const ProductCard = ({ product, handleAddToCart }) => {
-  const { name, cost, image, rating } = product;
+  const { name, cost, image, rating, _id } = product;
   return (
     <Card className="card">
-      <CardMedia sx={{ height: 180 }} image={image} title={name} component="img"/>
+      <CardMedia
+        sx={{ height: 180 }}
+        image={image}
+        title={name}
+        component="img"
+      />
       <CardContent>
         <Stack spacing={0.5}>
           <Typography gutterBottom variant="body2" component="div">
@@ -33,8 +38,15 @@ const ProductCard = ({ product, handleAddToCart }) => {
         </Stack>
       </CardContent>
       <CardActions>
-        <Button fullWidth variant="contained" size="small">
-          <AddShoppingCartOutlined sx={{ height: 15 }}></AddShoppingCartOutlined>
+        <Button
+          fullWidth
+          variant="contained"
+          size="small"
+          onClick={()=>handleAddToCart(_id)}
+        >
+          <AddShoppingCartOutlined
+            sx={{ height: 15 }}
+          ></AddShoppingCartOutlined>
           Add to Cart
         </Button>
       </CardActions>
