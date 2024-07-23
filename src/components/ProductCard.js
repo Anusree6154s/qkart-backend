@@ -1,4 +1,4 @@
-// import { AddShoppingCartOutlined } from "@mui/icons-material";
+import { AddShoppingCartOutlined } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -8,17 +8,12 @@ import {
   Rating,
   Typography,
   Stack,
-  // useMediaQuery,
-  // useTheme,
 } from "@mui/material";
 import React from "react";
 import "./ProductCard.css";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
 const ProductCard = ({ product, handleAddToCart }) => {
   const { name, cost, image, rating } = product;
-  // const theme = useTheme();
-  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <Card className="card">
       <CardMedia sx={{ height: 180 }} image={image} title={name} component="img"/>
@@ -39,7 +34,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
       </CardContent>
       <CardActions>
         <Button fullWidth variant="contained" size="small">
-          <AddShoppingCartIcon sx={{ height: 15 }}></AddShoppingCartIcon>
+          <AddShoppingCartOutlined sx={{ height: 15 }}></AddShoppingCartOutlined>
           Add to Cart
         </Button>
       </CardActions>
