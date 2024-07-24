@@ -104,7 +104,16 @@ const Products = () => {
       let res = await axios.get(`${config.endpoint}/products`);
       setProducts(res.data);
     } catch (error) {
-      console.log(error);
+      if (error.response) {
+        enqueueSnackbar(error.response.data.message, { variant: "error" });
+      } else {
+        enqueueSnackbar(
+          "Could not fetch cart details. Check that the backend is running, reachable and returns valid JSON.",
+          {
+            variant: "error",
+          }
+        );
+      }
     }
   };
 

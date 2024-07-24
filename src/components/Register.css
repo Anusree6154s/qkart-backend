@@ -1,18 +1,12 @@
 /* TODO: CRIO_TASK_MODULE_REGISTER - For screens of min width 768px, display the form content to the right end of the screen */
 .content {
+  background-image: url("../assets/hero_image.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
   height: 70vh;
-  border: red 2px solid;
-}
-
-@media (min-width: 768px) {
-  .content {
-    /* justify-content: flex-end; for screens with a min width of 768px */
-    align-items: flex-end;
-  }
 }
 
 .form {
@@ -28,14 +22,18 @@
   color: #00a278;
 }
 
-.secondary-action {
-  padding: 1rem 0;
+.primary-action {
+  font-size: 80%;
+}
+
+ a{
+  color: #00a278;
+  text-decoration: none;
 }
 
 .link {
   font-weight: 700;
   text-decoration: none;
-  color: #45c09f;
 }
 
 .link:focus {
@@ -59,34 +57,15 @@
 }
 
 @media screen and (min-width: 768px) {
+  .content {
+      justify-content: flex-end;
+  }
   .form {
-    min-width: 24rem;
+      min-width: 24rem;
   }
 }
 
-.form input {
-  font-size: 70%;
-  padding: 3%;
-}
-
-.form label {
-  font-size: 90%;
-  margin: 0px;
-  padding: 0px;
-  border: red 2px solid;
-  position: absolute;
-  top: 0px;
-}
-
-.TextField > div {
-  border: green solid 2px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.progress{
+.progress {
   display: flex;
   justify-content: center;
 }

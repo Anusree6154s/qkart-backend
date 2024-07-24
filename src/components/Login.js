@@ -127,14 +127,9 @@ const Login = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="space-between"
-      minHeight="100vh"
-    >
+    <Box display="flex" flexDirection="column" height="100vh">
       <Header hasHiddenAuthButtons={false} />
-      <Box className="content">
+      <Box className="content" sx={{ flexGrow: 1 }}>
         <Stack spacing={2} className="form">
           <h2 className="title">Login</h2>
           <TextField

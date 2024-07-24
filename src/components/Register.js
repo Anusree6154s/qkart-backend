@@ -121,14 +121,9 @@ const Register = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="space-between"
-      minHeight="100vh"
-    >
+    <Box display="flex" flexDirection="column" height="100vh">
       <Header hasHiddenAuthButtons={false} />
-      <Box className="content">
+      <Box className="content" sx={{ flexGrow: 1 }}>
         <Stack spacing={2} className="form">
           <h2 className="title">Register</h2>
           <TextField
@@ -146,6 +141,13 @@ const Register = () => {
                 [e.target.id]: e.target.value,
               }))
             }
+            size="small"
+            InputLabelProps={{
+              style: { fontSize: "0.7rem" },
+            }}
+            InputProps={{
+              style: { fontSize: "0.7rem" },
+            }}
           />
           <TextField
             className="TextField"
@@ -163,6 +165,16 @@ const Register = () => {
                 [e.target.id]: e.target.value,
               }))
             }
+            size="small"
+            InputLabelProps={{
+              style: { fontSize: "0.7rem" },
+            }}
+            InputProps={{
+              style: { fontSize: "0.7rem" },
+            }}
+            FormHelperTextProps={{
+              style: { fontSize: "0.7rem" },
+            }}
           />
           <TextField
             className="TextField"
@@ -178,6 +190,13 @@ const Register = () => {
                 [e.target.id]: e.target.value,
               }))
             }
+            size="small"
+            InputLabelProps={{
+              style: { fontSize: "0.7rem" },
+            }}
+            InputProps={{
+              style: { fontSize: "0.7rem" },
+            }}
           />
           {!isLoading && (
             <Button
@@ -196,7 +215,8 @@ const Register = () => {
               <CircularProgress />
             </Box>
           )}
-          <p className="secondary-action">
+
+          <p className="primary-action">
             Already have an account? <Link to="/login">Login here</Link>
           </p>
         </Stack>
