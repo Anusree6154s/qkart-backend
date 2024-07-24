@@ -1,3 +1,4 @@
+import Thanks from "./components/Thanks";
 import Checkout from "./components/Checkout";
 import Register from "./components/Register";
 import ipConfig from "./ipConfig.json";
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/checkout" component={Checkout} />
+        <Route path="/thanks" component={Thanks} />
       </Switch>
     </div>
   );

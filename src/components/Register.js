@@ -7,8 +7,6 @@ import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
 import "./Register.css";
-
-// TODO: CRIO_TASK_MODULE_REGISTER - Implement the register function
 import { useHistory, Link } from "react-router-dom";
 
 const Register = () => {

@@ -156,7 +156,6 @@ describe("Cart Component", () => {
     const item1 = screen.getAllByText(/Tan Leatherette Weekender Duffle/);
     const item2 = screen.getAllByText(/The Minimalist Slim Leather Watch/);
 
-    console.log(item1)
     const item1Price = screen.getAllByText("$150");
     const item2Price = screen.getAllByText("$60");
 

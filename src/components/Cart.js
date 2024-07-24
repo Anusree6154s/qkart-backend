@@ -7,7 +7,7 @@ import {
 import { Button, IconButton, Stack } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
-import {  Link } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import "./Cart.css";
 
 // Definition of Data Structures used
@@ -80,6 +80,20 @@ export const getTotalCartValue = (items = []) => {
   return items.reduce((acc, curr) => curr.qty * curr.cost + acc, 0);
 };
 
+// TODO: CRIO_TASK_MODULE_CHECKOUT - Implement function to return total cart quantity
+/**
+ * Return the sum of quantities of all products added to the cart
+ *
+ * @param { Array.<CartItem> } items
+ *    Array of objects with complete data on products in cart
+ *
+ * @returns { Number }
+ *    Total quantity of products added to the cart
+ *
+ */
+export const getTotalItems = (items = []) => {};
+
+// TODO: CRIO_TASK_MODULE_CHECKOUT - Add static quantity view for Checkout page cart
 /**
  * Component to display the current quantity for a product and + and - buttons to update product quantity on cart
  *
@@ -92,8 +106,11 @@ export const getTotalCartValue = (items = []) => {
  * @param {Function} handleDelete
  *    Handler function which reduces the quantity of a product in cart by 1
  *
+ * @param {Boolean} isReadOnly
+ *    If product quantity on cart is to be displayed as read only without the + - options to change quantity
  *
  */
+
 const ItemQuantity = ({ value, handleAdd, handleDelete }) => {
   return (
     <Stack direction="row" alignItems="center">
@@ -111,7 +128,6 @@ const ItemQuantity = ({ value, handleAdd, handleDelete }) => {
 };
 
 /**
- * Component to display the Cart view
  *
  * @param { Array.<Product> } products
  *    Array of objects with complete data of all available products
@@ -122,11 +138,12 @@ const ItemQuantity = ({ value, handleAdd, handleDelete }) => {
  * @param {Function} handleDelete
  *    Current quantity of product in cart
  *
+ * @param {Boolean} isReadOnly
+ *    If product quantity on cart is to be displayed as read only without the + - options to change quantity
  *
  */
-const Cart = ({ products, items = [], handleQuantity }) => {
+const Cart = ({ isReadOnly, products, items = [], handleQuantity }) => {
   let cartItems = generateCartItemsFrom(items, products);
-
   if (!items.length) {
     return (
       <Box className="cart empty">
@@ -174,12 +191,18 @@ const Cart = ({ products, items = [], handleQuantity }) => {
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <ItemQuantity
-                  // Add required props by checking implementation
-                  value={item.qty}
-                  handleAdd={() => handleQuantity(item.productId, "add")}
-                  handleDelete={() => handleQuantity(item.productId, "delete")}
-                />
+                {!isReadOnly ? (
+                  <ItemQuantity
+                    // Add required props by checking implementation
+                    value={item.qty}
+                    handleAdd={() => handleQuantity(item.productId, "add")}
+                    handleDelete={() =>
+                      handleQuantity(item.productId, "delete")
+                    }
+                  />
+                ) : (
+                  <div style={{ fontSize: "0.7rem" }}>Qty:{item.qty}</div>
+                )}
                 <Box padding="0.5rem" fontWeight="700" fontSize="0.7rem">
                   ${item.cost}
                 </Box>
@@ -207,20 +230,115 @@ const Cart = ({ products, items = [], handleQuantity }) => {
             ${getTotalCartValue(cartItems)}
           </Box>
         </Box>
-        <Box display="flex" justifyContent="flex-end" className="cart-footer">
-          <Link to="/checkout">
-          <Button
-            color="primary"
-            variant="contained"
-            startIcon={<ShoppingCart />}
-            className="checkout-btn"
-            size="small"
-          >
-            Checkout
-          </Button>
-          </Link>
-        </Box>
+        {!isReadOnly && (
+          <Box display="flex" justifyContent="flex-end" className="cart-footer">
+            <Link to="/checkout">
+              <Button
+                color="primary"
+                variant="contained"
+                startIcon={<ShoppingCart />}
+                className="checkout-btn"
+                size="small"
+              >
+                Checkout
+              </Button>
+            </Link>
+          </Box>
+        )}
       </Box>
+      {isReadOnly && (
+        <Box className="cart" padding="1rem 0rem">
+          <Box
+            padding=" 1rem 1rem 0rem 1rem "
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Box alignSelf="center" fontSize="1.5rem" fontWeight="bold">
+              Order Details
+            </Box>
+          </Box>
+          <Stack padding="1rem" spacing={1.5}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box color="#3C3C3C" alignSelf="center" fontSize="0.8rem">
+                Products
+              </Box>
+              <Box
+                color="#3C3C3C"
+                fontWeight="700"
+                fontSize="0.8rem"
+                alignSelf="center"
+                data-testid="cart-total"
+              >
+                {cartItems.length}
+              </Box>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box color="#3C3C3C" alignSelf="center" fontSize="0.8rem">
+                Subtotal
+              </Box>
+              <Box
+                color="#3C3C3C"
+                fontWeight="700"
+                fontSize="0.8rem"
+                alignSelf="center"
+                data-testid="cart-total"
+              >
+                ${getTotalCartValue(cartItems)}
+              </Box>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box color="#3C3C3C" alignSelf="center" fontSize="0.8rem">
+                Shipping Charges
+              </Box>
+              <Box
+                color="#3C3C3C"
+                fontWeight="700"
+                fontSize="0.8rem"
+                alignSelf="center"
+                data-testid="cart-total"
+              >
+                $0
+              </Box>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box
+                color="#3C3C3C"
+                alignSelf="center"
+                fontSize="1rem"
+                fontWeight="bold"
+              >
+                Total
+              </Box>
+              <Box
+                color="#3C3C3C"
+                fontWeight="700"
+                fontSize="1rem"
+                alignSelf="center"
+                data-testid="cart-total"
+              >
+                ${getTotalCartValue(cartItems)}
+              </Box>
+            </Box>
+          </Stack>
+        </Box>
+      )}
     </>
   );
 };
