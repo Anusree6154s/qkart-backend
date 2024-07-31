@@ -3,6 +3,7 @@ var router = express.Router();
 const { nanoid } = require("nanoid");
 const { handleError, verifyAuth } = require("../utils");
 var { users } = require("../db");
+const { isTemplateExpression } = require("typescript");
 
 router.get("/addresses", verifyAuth, (req, res) => {
   console.log(`GET request received to "/user/addresses"`);
@@ -25,10 +26,23 @@ router.post("/addresses", verifyAuth, (req, res) => {
       message: "Address should be less than 128 characters",
     });
   }
-  req.user.addresses.push({
-    _id: nanoid(),
-    address: req.body.address,
-  });
+
+  const existingAddressIndex = req.user.addresses.findIndex(
+    (item) => item._id === req.body.addressId
+  );
+
+  console.log(existingAddressIndex);
+  if (existingAddressIndex !== -1) {
+    // Address exists, update it
+    req.user.addresses[existingAddressIndex].address = req.body.address;
+  } else {
+    // Address does not exist, add it
+    req.user.addresses.push({
+      _id: nanoid(),
+      address: req.body.address,
+    });
+  }
+
   users.update(
     { _id: req.user._id },
     { $set: { addresses: req.user.addresses } },
@@ -77,5 +91,17 @@ router.delete("/addresses/:id", verifyAuth, async (req, res) => {
     }
   );
 });
+
+router.get("/", (req, res) => {
+  console.log("Request received for retrieving users list");
+
+  users.find({}, (err, docs) => {
+    if (err) {
+      return handleError(res, err);
+    }
+    return res.status(200).json(docs);
+  });
+});
+
 
 module.exports = router;

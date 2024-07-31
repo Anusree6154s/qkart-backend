@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const { handleError, verifyAuth, getProduct } = require("../utils");
 var { users, products } = require("../db");
+const { nanoid } = require("nanoid");
 
 // Cart Controller
 router.get("/", verifyAuth, (req, res) => {
@@ -104,14 +105,34 @@ router.post("/checkout", verifyAuth, async (req, res) => {
   console.log("Cart", req.user.cart);
   console.log("Total cost", total);
   console.log("Address", req.user.addresses[addressIndex]);
+
+  //push new order to orders in user db
+  req.user.orders.push({
+    _id: nanoid(),
+    date: new Date().toLocaleDateString("en-GB").split("/").join("-"),
+    order: req.user.cart,
+    amount: total,
+    address: req.user.addresses[addressIndex],
+  });
+
+  //temp store user info
+  let updateUser = { ...req.user };
+
   // Now clear cart
   req.user.cart = [];
+
+  //finally update user
   users.update({ _id: req.user._id }, req.user, {}, (err) => {
     if (err) {
       handleError(res, err);
     }
     return res.status(200).json({
       success: true,
+      _id: updateUser.orders[updateUser.orders.length - 1]._id,
+      date: updateUser.orders[updateUser.orders.length - 1].date,
+      order: updateUser.cart,
+      amount: total,
+      address: req.user.addresses[addressIndex],
     });
   });
 });

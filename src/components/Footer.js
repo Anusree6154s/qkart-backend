@@ -4,8 +4,8 @@ import "./Footer.css";
 
 const Footer = () => {
   return (
-    <Box className="footer">
-      <Box sx={{ textAlign:'center', flexShrink:1}}>
+    <Box className="footer" style={{ zIndex: 2000 }}>
+      <Box sx={{ textAlign: "center", flexShrink: 1 }}>
         <img src="logo_dark.svg" alt="QKart-icon"></img>
       </Box>
       <p className="footer-text">

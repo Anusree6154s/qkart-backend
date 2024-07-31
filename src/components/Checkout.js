@@ -1,4 +1,5 @@
 import { CreditCard, Delete } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Button,
   Divider,
@@ -17,6 +18,10 @@ import Cart, { getTotalCartValue, generateCartItemsFrom } from "./Cart";
 import "./Checkout.css";
 import Footer from "./Footer";
 import Header from "./Header";
+
+import emailjs from "emailjs-com";
+
+// gmail generated pasword: ttzq maan zomj ilqa
 
 // Definition of Data Structures used
 /**
@@ -88,6 +93,7 @@ const AddNewAddressView = ({
   newAddress,
   handleNewAddress,
   addAddress,
+  editAddress,
 }) => {
   return (
     <Box display="flex" flexDirection="column">
@@ -96,18 +102,20 @@ const AddNewAddressView = ({
         minRows={4}
         placeholder="Enter your complete address"
         onChange={(event) =>
-          handleNewAddress({
+          handleNewAddress((currNewAddress) => ({
+            ...currNewAddress,
             value: event.target.value,
             isAddingNewAddress: true,
-          })
+          }))
         }
+        defaultValue={newAddress.value}
       />
       <Stack direction="row" my="1rem">
         <Button
           variant="contained"
           onClick={() => addAddress(token, newAddress)}
         >
-          Add
+          {editAddress ? "Edit" : "Add"}
         </Button>
         <Button
           variant="text"
@@ -134,9 +142,12 @@ const Checkout = () => {
   const [products, setProducts] = useState([]);
   const [addresses, setAddresses] = useState({ all: [], selected: "" });
   const [newAddress, setNewAddress] = useState({
+    id: null,
     isAddingNewAddress: false,
     value: "",
   });
+  const [editAddress, setEditAddress] = useState(false);
+  const [email, setEmail] = useState("");
 
   // Fetch the entire products list
   const getProducts = async () => {
@@ -269,7 +280,7 @@ const Checkout = () => {
       // TODO: CRIO_TASK_MODULE_CHECKOUT - Add new address to the backend and display the latest list of addresses
       const response = await axios.post(
         `${config.endpoint}/user/addresses`,
-        { address: newAddress.value },
+        { addressId: newAddress.id, address: newAddress.value },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -383,7 +394,6 @@ const Checkout = () => {
    *
    */
   const validateRequest = (items, addresses) => {
-    console.log(balance, getTotalCartValue(items));
     let arr = [
       {
         check: balance <= getTotalCartValue(items),
@@ -445,7 +455,7 @@ const Checkout = () => {
   const performCheckout = async (token, items, addresses) => {
     if (!validateRequest(items, addresses)) return;
     try {
-      await axios.post(
+      let res = await axios.post(
         `${config.endpoint}/cart/checkout`,
         { addressId: addresses.selected },
         {
@@ -455,10 +465,28 @@ const Checkout = () => {
         }
       );
 
-      enqueueSnackbar("Order Placed Successfully", {variant:'success'});
+      enqueueSnackbar("Order Placed Successfully", { variant: "success" });
       localStorage.setItem("balance", balance - getTotalCartValue(items));
+
+      // send email
+      let formData = {
+        name: localStorage.getItem("username"),
+        email: email,
+        orderId: res.data._id,
+        order: generateCartItemsFrom(res.data.order, products),
+        orderDate: res.data.date,
+        orderAmount: res.data.amount,
+      };
+      emailjs.send(
+        "service_t02yo3u",
+        "template_gnfp56n",
+        formData,
+        "sh5ftzuQ4g5FMqdAx"
+      );
+
       history.push("/thanks", { from: "Checkout" });
     } catch (e) {
+      console.log(e);
       if (e.response) {
         enqueueSnackbar(e.response.data.message, { variant: "error" });
       } else {
@@ -535,13 +563,30 @@ const Checkout = () => {
                     }}
                   >
                     <Typography>{item.address}</Typography>
-                    <Button
-                      variant="text"
-                      onClick={(e) => deleteAddress(token, item._id)}
-                    >
-                      {" "}
-                      <Delete></Delete> Delete
-                    </Button>
+                    <div>
+                      <Button
+                        variant="text"
+                        onClick={() => {
+                          setNewAddress((currNewAddress) => ({
+                            ...currNewAddress,
+                            id: item._id,
+                            value: item.address,
+                            isAddingNewAddress: true,
+                          }));
+                          setEditAddress(true);
+                        }}
+                      >
+                        <EditIcon />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="text"
+                        onClick={(e) => deleteAddress(token, item._id)}
+                        sx={{ color: "red" }}
+                      >
+                        <Delete></Delete> Delete
+                      </Button>
+                    </div>
                   </Box>
                 ))
               ) : (
@@ -568,13 +613,36 @@ const Checkout = () => {
                 Add new address
               </Button>
             ) : (
+              /* TODO: Add a new handle handleEditAddress and  make addesses editable*/
               <AddNewAddressView
                 token={token}
                 newAddress={newAddress}
                 handleNewAddress={setNewAddress}
                 addAddress={addAddress}
+                editAddress={editAddress}
               />
             )}
+
+            <Typography color="#3C3C3C" variant="h4" my="1rem">
+              Email
+            </Typography>
+            <Typography
+              color="#3C3C3C"
+              my="1rem"
+              display="flex"
+              alignItems="center"
+              gap="10px"
+            >
+              Enter email id to send confirmation:
+              <TextField
+                required
+                // id="outlined-required"
+                label="Email"
+                variant="outlined"
+                size="small"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Typography>
 
             <Typography color="#3C3C3C" variant="h4" my="1rem">
               Payment

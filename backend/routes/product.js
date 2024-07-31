@@ -53,4 +53,70 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.put("/:id", (req, res) => {
+  console.log(`Request received for updating product with ID ${req.params.id}`);
+
+  products.update(
+    { _id: req.params.id },
+    { $set: req.body.product },
+    {},
+    (err) => {
+      if (err) {
+        handleError(res, err);
+      }
+
+      console.log(`Product with ID ${req.params.id} updated successfully`);
+
+      // Fetch all products after the update
+      products.find({}, (err, docs) => {
+        if (err) {
+          return handleError(res, err);
+        }
+        return res.status(200).json(docs);
+      });
+    }
+  );
+});
+
+router.delete("/:id", (req, res) => {
+  console.log(`Request received for deleting product with ID ${req.params.id}`);
+
+  products.remove(
+    { _id: req.params.id }, // Filter criteria: find the product by ID
+    {}, // Options: empty object, no special options
+    (err) => {
+      if (err) {
+        return handleError(res, err); // Handle the error
+      }
+
+      console.log(`Product with ID ${req.params.id} deleted successfully`);
+
+      // Fetch all products after the deletion
+      products.find({}, (err, docs) => {
+        if (err) {
+          return handleError(res, err);
+        }
+        return res.status(200).json(docs);
+      });
+    }
+  );
+});
+
+router.post("/", (req, res) => {
+  console.log(`Request received for adding product ${req.body.name}`);
+  products.insert({
+    name: req.body.name,
+    category: req.body.category,
+    image: req.body.image,
+    cost: req.body.cost,
+    rating: req.body.rating,
+  });
+
+  console.log(`Added Product ${req.body.name}`);
+
+  return res.status(201).json({
+    success: true,
+  });
+});
+
 module.exports = router;

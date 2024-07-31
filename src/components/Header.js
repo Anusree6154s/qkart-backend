@@ -11,10 +11,13 @@ import { useHistory, Link } from "react-router-dom";
 
 const Header = ({ children, hasHiddenAuthButtons = true }) => {
   const [user, setUser] = useState("");
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     let username = localStorage.getItem("username");
     setUser(username);
+    let Token = localStorage.getItem("token");
+    setToken(Token);
   }, []);
 
   return (
@@ -26,7 +29,7 @@ const Header = ({ children, hasHiddenAuthButtons = true }) => {
         <>
           {children}
           <Stack direction="row" spacing={2}>
-            {!user && (
+            {!token && (
               <>
                 <Link to="/login">
                   <Button className="login-button" variant="text">
@@ -40,7 +43,7 @@ const Header = ({ children, hasHiddenAuthButtons = true }) => {
                 </Link>
               </>
             )}
-            {user && (
+            {token && (
               <>
                 <Box display="flex" gap={1} alignItems="center">
                   <Avatar
@@ -55,10 +58,9 @@ const Header = ({ children, hasHiddenAuthButtons = true }) => {
                     className="logout-button"
                     variant="text"
                     onClick={() => {
-                      localStorage.setItem("username", "");
                       localStorage.setItem("token", "");
                       localStorage.setItem("balance", "");
-                      setUser("");
+                      setToken("");
                     }}
                   >
                     Logout
