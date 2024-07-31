@@ -4,6 +4,7 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import axios from "axios";
 import { config } from "../App";
+import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
 
 //sidebar
 import * as React from "react";
@@ -437,7 +438,7 @@ export default function AdminDashboard() {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <AdminHeader hiddenButtons="true" dashboard={true} />
-      <Box sx={{ display: "flex", backgroundColor: "#e9f5e1" }}>
+      <Box sx={{ display: "flex", backgroundColor: "#e9f5e1", flexGrow: 1 }}>
         <Drawer
           variant="permanent"
           open={open}
@@ -498,104 +499,123 @@ export default function AdminDashboard() {
             </ListItem>
           </List>
         </Drawer>
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <DrawerHeader />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Toolbar
+        {orders.length > 0 ? (
+          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <DrawerHeader />
+            <Box
               sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
             >
-              <Typography
-                sx={{ flex: "1 1 100%" }}
-                variant="h5"
-                id="tableTitle"
-                component="div"
-                color="#3C3C3C"
+              <Toolbar
+                sx={{
+                  pl: { sm: 2 },
+                  pr: { xs: 1, sm: 1 },
+                }}
               >
-                {display === "orders" ? "Orders" : "Users"}
-              </Typography>
-            </Toolbar>
-            <Paper sx={{ width: "95%", mb: 2 }}>
-              {display === "orders" ? (
-                <TableContainer component={Paper}>
-                  <Table aria-label="collapsible table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell />
-                        <TableCell sx={{ fontWeight: "bold" }}>Sr.No</TableCell>
-                        <TableCell sx={{ fontWeight: "bold" }}>
-                          Order ID
-                        </TableCell>
-                        <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                          No.of Products
-                        </TableCell>
+                <Typography
+                  sx={{ flex: "1 1 100%" }}
+                  variant="h5"
+                  id="tableTitle"
+                  component="div"
+                  color="#3C3C3C"
+                >
+                  {display === "orders" ? "Orders" : "Users"}
+                </Typography>
+              </Toolbar>
+              <Paper sx={{ width: "95%", mb: 2 }}>
+                {display === "orders" ? (
+                  <TableContainer component={Paper}>
+                    <Table aria-label="collapsible table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell />
+                          <TableCell sx={{ fontWeight: "bold" }}>
+                            Sr.No
+                          </TableCell>
+                          <TableCell sx={{ fontWeight: "bold" }}>
+                            Order ID
+                          </TableCell>
+                          <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                            No.of Products
+                          </TableCell>
 
-                        <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                          Order Amount
-                        </TableCell>
-                        <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                          Order Date
-                        </TableCell>
-                        <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                          Shipping Address
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows.map((row, index) => (
-                        <Row
-                          key={index}
-                          row={row}
-                          display={display}
-                          index={index + 1}
-                        />
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              ) : (
-                <TableContainer component={Paper}>
-                  <Table aria-label="collapsible table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell />
-                        <TableCell sx={{ fontWeight: "bold" }}>Sr.No</TableCell>
-                        <TableCell sx={{ fontWeight: "bold" }}>User</TableCell>
-                        <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                          No.of Orders
-                        </TableCell>
-                        <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                          No.of Addresses
-                        </TableCell>
-                        <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                          Balance
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows.map((row, index) => (
-                        <Row
-                          key={index}
-                          row={row}
-                          display={display}
-                          index={index + 1}
-                        />
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              )}
-            </Paper>
+                          <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                            Order Amount
+                          </TableCell>
+                          <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                            Order Date
+                          </TableCell>
+                          <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                            Shipping Address
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {rows.map((row, index) => (
+                          <Row
+                            key={index}
+                            row={row}
+                            display={display}
+                            index={index + 1}
+                          />
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <TableContainer component={Paper}>
+                    <Table aria-label="collapsible table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell />
+                          <TableCell sx={{ fontWeight: "bold" }}>
+                            Sr.No
+                          </TableCell>
+                          <TableCell sx={{ fontWeight: "bold" }}>
+                            User
+                          </TableCell>
+                          <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                            No.of Orders
+                          </TableCell>
+                          <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                            No.of Addresses
+                          </TableCell>
+                          <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                            Balance
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {rows.map((row, index) => (
+                          <Row
+                            key={index}
+                            row={row}
+                            display={display}
+                            index={index + 1}
+                          />
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                )}
+              </Paper>
+            </Box>
           </Box>
-        </Box>
+        ) : (
+            <Box component="main"  sx={{ flexGrow: 1, p: 3 }}>
+              <DrawerHeader />
+              <Box className="cart empty">
+                <RemoveCircleOutlineOutlinedIcon className="empty-cart-icon" />
+                <br></br>
+                <Box color="#aaa" textAlign="center">
+                  {display === "orders" ? "Orders" : "Users"} is empty
+                </Box>
+              </Box>
+            </Box>
+        )}
       </Box>
       <Footer />
     </Box>

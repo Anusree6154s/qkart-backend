@@ -10,8 +10,8 @@ import AddProduct from "./components/AddProduct";
 import AdminDashboard from "./components/AdminDashboard";
 
 export const config = {
-  // endpoint: `https://qkart-backend-8sar.onrender.com/api/v1`,
-  endpoint: `http://${ipConfig.workspaceIp}:8082/api/v1`,
+  endpoint: `https://qkart-backend-8sar.onrender.com/api/v1`,
+  // endpoint: `http://${ipConfig.workspaceIp}:8082/api/v1`,
 };
 
 function App() {
